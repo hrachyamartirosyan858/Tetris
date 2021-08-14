@@ -1,7 +1,8 @@
 let tetrisArr = [
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -14,11 +15,10 @@ let tetrisArr = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 2, 0, 0, 0, 0, 0, 0, 2]
 ];
 
 function isPieceGoingDownOk(arr) {
@@ -44,7 +44,7 @@ function pieceGoesDown(arr) {
                 }
             }
         }
-        return pieceGoesDown(arr);
+        return arr;
     } else {
         for (let i = 19; i >= 0; i--) {
             for (let j = 0; j < 10; j++) {
@@ -57,7 +57,66 @@ function pieceGoesDown(arr) {
     return arr;
 }
 
-console.log(pieceGoesDown(tetrisArr));
+// console.log(pieceGoesDown(tetrisArr));
+
+function isPieceGoingRightOk(arr) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 9; j >= 0; j--) {
+            if (arr[i][j] === 1) {
+                if (arr[i][j + 1] === undefined || arr[i][j + 1] === 2) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function pieceGoesRight(arr) {
+    if (isPieceGoingRightOk(arr)) {
+        for (let i = 0; i < 20; i++) {
+            for (let j = 9; j >= 0; j--) {
+                if (arr[i][j] === 1) {
+                    arr[i][j] = 0;
+                    arr[i][j + 1] = 1;
+                }
+            }
+        }
+    }
+    return arr;
+}
+
+
+// console.log(pieceGoesRight(tetrisArr));
+
+function isPieceGoingLeftOk(arr) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
+            if (arr[i][j] === 1) {
+                if (arr[i][j - 1] === undefined || arr[i][j - 1] === 2) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function pieceGoesLeft(arr) {
+    if (isPieceGoingLeftOk(arr)) {
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 10; j++) {
+                if (arr[i][j] === 1) {
+                    arr[i][j] = 0;
+                    arr[i][j - 1] = 1;
+                }
+            }
+        }
+    }
+    return arr;
+}
+
+console.log(pieceGoesLeft(tetrisArr));
 
 const iBlock1 = [[1, 1, 1, 1]];
 
