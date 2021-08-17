@@ -1,5 +1,5 @@
 let tetrisArr = [
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -50,6 +50,7 @@ function pieceGoesDown(arr) {
             for (let j = 0; j < 10; j++) {
                 if (arr[i][j] === 1) {
                     arr[i][j] = 2;
+                    importBlock();
                 }
             }
         }
@@ -134,7 +135,9 @@ function renderItems(arr) {
     }
 }
 
+
 button.addEventListener("click", renderItems(tetrisArr));
+
 
 document.addEventListener("keydown", function (event) {
     if (event.code === "ArrowRight") {
@@ -252,9 +255,11 @@ const allFirstBlocks = [iBlock1, jBlock1, lBlock1, oBlock1, sBlock1, tBlock1, zB
 
 function chooseRandomBlock() {
     const randomBlock = allFirstBlocks[Math.floor(Math.random() * 7)];
+    // console.log(randomBlock);
     for (let i = 0; i < randomBlock.length; i++) {
         for (let j = 0; j < randomBlock[0].length; j++) {
-            tetrisArr[i][j + Math.round((10 - randomBlock[0].length) / 2)] = randomBlock[i][j]
+            const index = Math.round((10 - randomBlock[0].length) / 2);
+            tetrisArr[i][j + index] = randomBlock[i][j]
         }
     }
 }
@@ -273,5 +278,8 @@ function isChoosenRancomBlockImported() {
 function importBlock() {
     if (isChoosenRancomBlockImported) {
         chooseRandomBlock();
+        renderItems(tetrisArr);
     }
 }
+
+button.addEventListener("click", importBlock());
