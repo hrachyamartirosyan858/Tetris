@@ -21,9 +21,13 @@ let tetrisArr = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
+const tetrisArrLength = 20;
+const tetrisArrLineLength = 10;
+let playerScore = 0;
+
 function isPieceGoingDownOk(arr) {
-    for (let i = 0; i < 20; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = 0; j < tetrisArrLineLength; j++) {
             if (arr[i][j] === 1) {
                 if (arr[i + 1] === undefined || arr[i + 1][j] === 2) {
                     return false;
@@ -36,8 +40,8 @@ function isPieceGoingDownOk(arr) {
 
 function pieceGoesDown(arr) {
     if (isPieceGoingDownOk(arr)) {
-        for (let i = 19; i >= 0; i--) {
-            for (let j = 0; j < 10; j++) {
+        for (let i = tetrisArrLength - 1; i >= 0; i--) {
+            for (let j = 0; j < tetrisArrLineLength; j++) {
                 if (arr[i][j] === 1) {
                     arr[i + 1][j] = 1;
                     arr[i][j] = 0;
@@ -46,21 +50,22 @@ function pieceGoesDown(arr) {
         }
         return arr;
     } else {
-        for (let i = 19; i >= 0; i--) {
-            for (let j = 0; j < 10; j++) {
+        for (let i = tetrisArrLength - 1; i >= 0; i--) {
+            for (let j = 0; j < tetrisArrLineLength; j++) {
                 if (arr[i][j] === 1) {
                     arr[i][j] = 2;
-                    importBlock();
                 }
             }
         }
+        removeLineFromArr();
+        importBlock();
     }
     return arr;
 }
 
 function isPieceGoingRightOk(arr) {
-    for (let i = 0; i < 20; i++) {
-        for (let j = 9; j >= 0; j--) {
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = tetrisArrLineLength - 1; j >= 0; j--) {
             if (arr[i][j] === 1) {
                 if (arr[i][j + 1] === undefined || arr[i][j + 1] === 2) {
                     return false;
@@ -73,8 +78,8 @@ function isPieceGoingRightOk(arr) {
 
 function pieceGoesRight(arr) {
     if (isPieceGoingRightOk(arr)) {
-        for (let i = 0; i < 20; i++) {
-            for (let j = 9; j >= 0; j--) {
+        for (let i = 0; i < tetrisArrLength; i++) {
+            for (let j = tetrisArrLineLength - 1; j >= 0; j--) {
                 if (arr[i][j] === 1) {
                     arr[i][j] = 0;
                     arr[i][j + 1] = 1;
@@ -86,8 +91,8 @@ function pieceGoesRight(arr) {
 }
 
 function isPieceGoingLeftOk(arr) {
-    for (let i = 0; i < 20; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = 0; j < tetrisArrLineLength; j++) {
             if (arr[i][j] === 1) {
                 if (arr[i][j - 1] === undefined || arr[i][j - 1] === 2) {
                     return false;
@@ -100,8 +105,8 @@ function isPieceGoingLeftOk(arr) {
 
 function pieceGoesLeft(arr) {
     if (isPieceGoingLeftOk(arr)) {
-        for (let i = 0; i < 20; i++) {
-            for (let j = 0; j < 10; j++) {
+        for (let i = 0; i < tetrisArrLength; i++) {
+            for (let j = 0; j < tetrisArrLineLength; j++) {
                 if (arr[i][j] === 1) {
                     arr[i][j] = 0;
                     arr[i][j - 1] = 1;
@@ -112,12 +117,10 @@ function pieceGoesLeft(arr) {
     return arr;
 }
 
-const button = document.querySelector(".button");
-
 function renderItems(arr) {
     document.querySelector(".tetris-field").innerHTML = "";
-    for (let i = 0; i < 20; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = 0; j < tetrisArrLineLength; j++) {
             if (arr[i][j] === 0) {
                 const div = document.createElement("div");
                 div.classList.add("white");
@@ -135,22 +138,22 @@ function renderItems(arr) {
     }
 }
 
-
-button.addEventListener("click", renderItems(tetrisArr));
-
-
-document.addEventListener("keydown", function (event) {
-    if (event.code === "ArrowRight") {
+function pieseMove(target) {
+    if (target.code === "ArrowRight") {
         pieceGoesRight(tetrisArr);
         renderItems(tetrisArr);
-    } else if (event.code === "ArrowLeft") {
+    } else if (target.code === "ArrowLeft") {
         pieceGoesLeft(tetrisArr);
         renderItems(tetrisArr);
-    } else if (event.code === "ArrowDown") {
+    } else if (target.code === "ArrowDown") {
         pieceGoesDown(tetrisArr);
+        playerScore += 10;
+        document.querySelector(".score").innerText = `score: ${playerScore} pts`;
         renderItems(tetrisArr);
     }
-})
+}
+
+document.addEventListener("keydown", pieseMove);
 
 
 const iBlock1 = [[1, 1, 1, 1]];
@@ -254,19 +257,25 @@ function randomNumber() {
 const allFirstBlocks = [iBlock1, jBlock1, lBlock1, oBlock1, sBlock1, tBlock1, zBlock1];
 
 function chooseRandomBlock() {
-    const randomBlock = allFirstBlocks[Math.floor(Math.random() * 7)];
-    // console.log(randomBlock);
+    const randomBlock = allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)];
     for (let i = 0; i < randomBlock.length; i++) {
         for (let j = 0; j < randomBlock[0].length; j++) {
-            const index = Math.round((10 - randomBlock[0].length) / 2);
-            tetrisArr[i][j + index] = randomBlock[i][j]
+            const index = Math.floor((tetrisArrLineLength - randomBlock[0].length) / 2);
+            if (tetrisArr[i][j + index] === 2) {
+                document.querySelector(".game-over").classList.add("unhide");
+                document.querySelector(".game-over").classList.remove("hide");
+                document.removeEventListener("keydown", pieseMove);
+                clearInterval(fistLevel);
+            } else {
+                tetrisArr[i][j + index] = randomBlock[i][j];
+            }
         }
     }
 }
 
 function isChoosenRancomBlockImported() {
-    for (let i = 0; i < 20; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = 0; j < tetrisArrLineLength; j++) {
             if (tetrisArr[i][j] === 1) {
                 return false;
             }
@@ -275,11 +284,46 @@ function isChoosenRancomBlockImported() {
     return true;
 }
 
+
 function importBlock() {
-    if (isChoosenRancomBlockImported) {
+    if (isChoosenRancomBlockImported()) {
         chooseRandomBlock();
         renderItems(tetrisArr);
     }
 }
 
-button.addEventListener("click", importBlock());
+importBlock();
+
+function removeLineFromArr() {
+    const emptyTopLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for (let i = tetrisArrLength - 1; i >= 0; i--) {
+        let jLineSum = 0;
+        for (let j = 0; j < tetrisArrLineLength; j++) {
+            jLineSum += tetrisArr[i][j];
+        }
+        if (jLineSum === 20) {
+            tetrisArr.splice(i, 1);
+            playerScore += 100;
+            document.querySelector(".score").innerText = `score: ${playerScore} pts`;
+        }
+    }
+    while (tetrisArr.length < tetrisArrLength) {
+        tetrisArr.unshift(emptyTopLine);
+    }
+    return tetrisArr;
+}
+
+document.querySelector(".start-button").addEventListener("click", function () {
+    window.location.reload();
+});
+
+document.querySelector(".pause-button").addEventListener("click", function () {
+    alert("You paused the game, press Ok to continue!")
+});
+
+function down() {
+    pieceGoesDown(tetrisArr);
+    renderItems(tetrisArr);
+};
+
+const fistLevel = setInterval(down, 1000);
