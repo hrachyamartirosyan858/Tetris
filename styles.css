@@ -7,16 +7,16 @@ body{
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(20, 1fr);
-    border-top: solid green 2px;
-    border-left: solid green 2px;
-    width: 220px;
+    border: solid green 2px;
+    width: 225px;
+    height: 447px;
     grid-gap: 0px;
       
 }
 
 .tetris-field div{
-    border-right: solid green 2px;
-    border-bottom: solid green 2px;
+    border: solid green 1.2px;
+    /* border-bottom: solid green 1px; */
     width: 20px;
     height: 20px;
     margin: 0;
