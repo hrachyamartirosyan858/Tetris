@@ -316,12 +316,24 @@ document.querySelector(".start-button").addEventListener("click", function () {
         return tetrisArr;
     }
 
-    document.querySelector(".start-button").addEventListener("click", function () {
-        window.location.reload();
-    });
+    // document.querySelector(".start-button").addEventListener("click", function () {
+    //     window.location.reload();
+    // });
+
+    let pauseClick = 2;
 
     document.querySelector(".pause-button").addEventListener("click", function () {
-        alert("You paused the game, press Ok to continue!")
+        if (pauseClick % 2 === 0) {
+            clearInterval(fistLevel);
+            document.removeEventListener("keydown", pieseMove);
+            pauseClick += 1;
+            document.querySelector(".pause-button").value = "RESUME";
+        } else {
+            fistLevel = setInterval(down, 1000);
+            document.addEventListener("keydown", pieseMove);
+            pauseClick += 1;
+            document.querySelector(".pause-button").value = "PAUSE";
+        }
     });
 
     function down() {
@@ -329,6 +341,5 @@ document.querySelector(".start-button").addEventListener("click", function () {
         renderItems(tetrisArr);
     };
 
-    const fistLevel = setInterval(down, 1000);
-
+    let fistLevel = setInterval(down, 1000);
 });

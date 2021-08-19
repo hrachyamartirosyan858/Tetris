@@ -9,12 +9,15 @@
 </head>
 
 <body>
-    <div class="tetris-field"></div>
-    <div class="game-over hidden">
-        <div>GAME OVER</div>
-    </div>
     <div class="score">score: 0 pts</div>
-    <input type="button" class="start-button" value="START NEW GAME">
-    <input type="button" class="pause-button" value="Pause the game">
+    <div class="tetris-field"></div>
+    <div>
+        <div class="game-over hidden">GAME OVER</div>
+        <div class="game-paused hidden">PAUSED</div>
+    </div>
+    <div>
+        <input type="button" class="start-button" value="START NEW GAME">
+        <input type="button" class="pause-button" value="PAUSE">
+    </div>
     <script src="index.js"></script>
 </body>
