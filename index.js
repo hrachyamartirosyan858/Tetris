@@ -27,6 +27,7 @@ document.querySelector(".start-button").addEventListener("click", function () {
     const tetrisArrLength = 20;
     const tetrisArrLineLength = 10;
     let playerScore = 0;
+    let currentBlock;
 
     function isPieceGoingDownOk(arr) {
         for (let i = 0; i < tetrisArrLength; i++) {
@@ -161,56 +162,14 @@ document.querySelector(".start-button").addEventListener("click", function () {
 
     const iBlock1 = [[1, 1, 1, 1]];
 
-    const iBlock2 = [[1], [1], [1], [1]];
-
     const jBlock1 = [
         [1, 0, 0],
         [1, 1, 1]
     ];
 
-    const jBlock2 = [
-        [1, 1],
-        [1, 0],
-        [1, 0]
-    ];
-
-    const jBlock3 = [
-        [1, 1, 1],
-        [0, 0, 1]
-    ];
-
-    const jBlock4 = [
-        [0, 1],
-        [0, 1],
-        [1, 1]
-    ];
-    const jBlockRotations = {
-        jBlock2: {
-            right: jBlock3,
-            left: jBlock1
-        }
-    };
-
     const lBlock1 = [
         [0, 0, 1],
         [1, 1, 1]
-    ];
-
-    const lBlock2 = [
-        [1, 0],
-        [1, 0],
-        [1, 1]
-    ];
-
-    const lBlock3 = [
-        [1, 1, 1],
-        [1, 0, 0]
-    ];
-
-    const lBlock4 = [
-        [1, 1],
-        [0, 1],
-        [0, 1]
     ];
 
     const oBlock1 = [
@@ -223,22 +182,9 @@ document.querySelector(".start-button").addEventListener("click", function () {
         [1, 1, 0]
     ];
 
-    const sBlock2 = [
-        [1, 0],
-        [1, 1],
-        [0, 1]
-    ];
-
-
     const tBlock1 = [
         [0, 1, 0],
         [1, 1, 1],
-    ];
-
-    const tBlock2 = [
-        [1, 0],
-        [1, 1],
-        [1, 0]
     ];
 
     const zBlock1 = [
@@ -246,21 +192,11 @@ document.querySelector(".start-button").addEventListener("click", function () {
         [0, 1, 1]
     ];
 
-    const zBlock2 = [
-        [0, 1],
-        [1, 1],
-        [1, 0]
-    ];
-
-    function randomNumber() {
-        const num = Math.floor(Math.random() * 7);
-        return num;
-    }
-
     const allFirstBlocks = [iBlock1, jBlock1, lBlock1, oBlock1, sBlock1, tBlock1, zBlock1];
 
     function chooseRandomBlock() {
         const randomBlock = allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)];
+        currentBlock = randomBlock;
         for (let i = 0; i < randomBlock.length; i++) {
             for (let j = 0; j < randomBlock[0].length; j++) {
                 const index = Math.floor((tetrisArrLineLength - randomBlock[0].length) / 2);
@@ -274,7 +210,69 @@ document.querySelector(".start-button").addEventListener("click", function () {
                 }
             }
         }
+
+
     }
+
+    function rotateCurrentBlock() {
+        currentBlock.reverse()
+        let resultArr = [];
+        for (let i = 0; i < currentBlock[0].length; i++) {
+            resultArr.push([]);
+            for (let j = 0; j < currentBlock.length; j++) {
+                resultArr[i][j] = currentBlock[j][i];
+            }
+        }
+        currentBlock = resultArr;
+    }
+
+    let indexI;
+    let indexJ;
+
+    function findIndexes() {
+        for (let i = tetrisArrLength - 1; i >= 0; i--) {
+            for (let j = 0; j < tetrisArrLineLength - 1; j++) {
+                if (tetrisArr[i][j] === 1) {
+                    indexI = i;
+                    indexJ = j;
+                    return;
+                }
+            }
+        }
+    }
+
+    function ClearTetrisArr() {
+        for (let i = tetrisArrLength - 1; i >= 0; i--) {
+            for (let j = 0; j < tetrisArrLineLength - 1; j++) {
+                if (tetrisArr[i][j] === 1) {
+                    tetrisArr[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    function imputNewCurrentBlock() {
+        for (let i = 0; i < currentBlock.length; i++) {
+            for (let j = 0; j < currentBlock[0].length; j++) {
+                if (tetrisArr[i + indexI][j + indexJ] !== 2) {
+                    tetrisArr[i + indexI - 1][j + indexJ] = currentBlock[i][j];
+                }
+            }
+        }
+
+    }
+
+    function pieceRotate(target) {
+        if (target.code === "ArrowUp") {
+            rotateCurrentBlock();
+            findIndexes();
+            ClearTetrisArr();
+            imputNewCurrentBlock();
+            renderItems(tetrisArr);
+        }
+    }
+
+    document.addEventListener("keydown", pieceRotate);
 
     function isChoosenRancomBlockImported() {
         for (let i = 0; i < tetrisArrLength; i++) {
@@ -323,14 +321,17 @@ document.querySelector(".start-button").addEventListener("click", function () {
     let pauseClick = 2;
 
     document.querySelector(".pause-button").addEventListener("click", function () {
+
         if (pauseClick % 2 === 0) {
             clearInterval(fistLevel);
             document.removeEventListener("keydown", pieseMove);
+            document.removeEventListener("keydown", pieceRotate);
             pauseClick += 1;
             document.querySelector(".pause-button").value = "RESUME";
         } else {
             fistLevel = setInterval(down, 1000);
             document.addEventListener("keydown", pieseMove);
+            document.addEventListener("keydown", pieceRotate);
             pauseClick += 1;
             document.querySelector(".pause-button").value = "PAUSE";
         }
@@ -342,4 +343,5 @@ document.querySelector(".start-button").addEventListener("click", function () {
     };
 
     let fistLevel = setInterval(down, 1000);
+
 });
