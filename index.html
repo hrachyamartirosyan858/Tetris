@@ -11,13 +11,16 @@
 <body>
     <div class="score">score: 0 pts</div>
     <div class="tetris-field"></div>
-    <div>
-        <div class="game-over hidden">GAME OVER</div>
-        <div class="game-paused hidden">PAUSED</div>
+
+    <div class="buttons">
+        <div>Next</div>
+        <div class="future-blocks-field"></div>
+        <input type="button" class="start-button" value="START NEW GAME">
+        <input type="button" class="pause-button hidden" value="PAUSE">
     </div>
     <div>
-        <input type="button" class="start-button" value="START NEW GAME">
-        <input type="button" class="pause-button" value="PAUSE">
+        <div class="game-over hidden">GAME OVER</div>
+        <div class="game-paused hidden">Game paused</div>
     </div>
     <script src="index.js"></script>
 </body>
