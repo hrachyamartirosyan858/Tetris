@@ -1,4 +1,3 @@
-
 let tetrisArr = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -22,61 +21,37 @@ let tetrisArr = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
+const iBlock = [[1, 1, 1, 1]];
 
-function startNewGame() {
-    let x = 1;
-    tetrisArr = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
-    renderItems(tetrisArr);
-    document.querySelector(".game-over").classList.remove("unhide");
-    document.querySelector(".game-over").classList.add("hide");
-    document.querySelector(".pause-button").classList.remove("hidden");
-    playerScore = 0;
-    document.querySelector(".score").innerText = `score: ${playerScore} pts`;
-    importBlock();
-    document.addEventListener("keydown", pieceMove);
-    document.addEventListener("keydown", pieceRotate);
-    blockIndexI = 0;
-    clearInterval(fistLevel);
-    fistLevel = setInterval(down, 1000);
-    if (pauseClickCounter % 2 !== 0) {
-        document.querySelector(".game-paused").classList.remove("unhide");
-        document.querySelector(".game-paused").classList.add("hide");
-        document.querySelector(".pause-button").value = "PAUSE";
-        pauseClickCounter += 1;
-    }
-}
+const jBlock = [
+    [1, 0, 0],
+    [1, 1, 1]
+];
 
-document.querySelector(".start-button").addEventListener("click", startNewGame);
+const lBlock = [
+    [0, 0, 1],
+    [1, 1, 1]
+];
 
-function gameOver() {
-    document.querySelector(".game-over").classList.add("unhide");
-    document.querySelector(".game-over").classList.remove("hide");
-    document.querySelector(".pause-button").classList.add("hidden");
-    clearInterval(fistLevel);
-    document.removeEventListener("keydown", pieceMove);
-    document.removeEventListener("keydown", pieceRotate);
-}
+const oBlock = [
+    [1, 1],
+    [1, 1]
+]
+
+const sBlock = [
+    [0, 1, 1],
+    [1, 1, 0]
+];
+
+const tBlock = [
+    [0, 1, 0],
+    [1, 1, 1],
+];
+
+const zBlock = [
+    [1, 1, 0],
+    [0, 1, 1]
+];
 
 const tetrisArrLength = 20;
 const tetrisArrLineLength = 10;
@@ -87,6 +62,106 @@ let fistLevel;
 let blockIndexI = 0;
 let blockIndexJTopLeft = 0;
 let blockIndexJTopRight = 0;
+let pauseClickCounter = 2;
+
+function render() {
+    renderGameStart();
+    renderPieceRotate();
+    renderPieceMove();
+    renderGamePause();
+}
+
+
+function renderPieceRotate() {
+    document.addEventListener("keydown", pieceRotate);
+}
+
+function renderPieceMove() {
+    document.addEventListener("keydown", pieceMove);
+}
+
+function renderGameStart() {
+
+    function startNewGame() {
+        tetrisArr = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        document.querySelector(".game-over").classList.remove("unhide");
+        document.querySelector(".game-over").classList.add("hide");
+        document.querySelector(".pause-button").classList.remove("hidden");
+        playerScore = 0;
+        document.querySelector(".score").innerText = `score: ${playerScore} pts`;
+        importBlock();
+        document.addEventListener("keydown", pieceMove);
+        document.addEventListener("keydown", pieceRotate);
+        blockIndexI = 0;
+        clearInterval(fistLevel);
+        fistLevel = setInterval(down, 1000);
+        if (pauseClickCounter % 2 !== 0) {
+            document.querySelector(".game-paused").classList.remove("unhide");
+            document.querySelector(".game-paused").classList.add("hide");
+            document.querySelector(".pause-button").value = "PAUSE";
+            pauseClickCounter += 1;
+        }
+    }
+
+    document.querySelector(".start-button").addEventListener("click", startNewGame);
+}
+
+function renderGamePause() {
+
+    function gamePauseResume() {
+        if (pauseClickCounter % 2 === 0) {
+            clearInterval(fistLevel);
+            document.removeEventListener("keydown", pieceMove);
+            document.removeEventListener("keydown", pieceRotate);
+            document.querySelector(".game-paused").classList.add("unhide");
+            document.querySelector(".game-paused").classList.remove("hide");
+            document.querySelector(".pause-button").value = "RESUME";
+            pauseClickCounter += 1;
+        } else {
+            fistLevel = setInterval(down, 1000);
+            document.addEventListener("keydown", pieceMove);
+            document.addEventListener("keydown", pieceRotate);
+            document.querySelector(".game-paused").classList.remove("unhide");
+            document.querySelector(".game-paused").classList.add("hide");
+            document.querySelector(".pause-button").value = "PAUSE";
+            pauseClickCounter += 1;
+        }
+    }
+
+    document.querySelector(".pause-button").addEventListener("click", gamePauseResume);
+}
+
+function gameOver() {
+    document.querySelector(".game-over").classList.add("unhide");
+    document.querySelector(".game-over").classList.remove("hide");
+    document.querySelector(".pause-button").classList.add("hidden");
+    clearInterval(fistLevel);
+    document.removeEventListener("keydown", pieceMove);
+    document.removeEventListener("keydown", pieceRotate);
+}
+
 
 function isPieceGoingDownOk(arr) {
     for (let i = 0; i < tetrisArrLength; i++) {
@@ -106,8 +181,8 @@ function pieceGoesDown(arr) {
         for (let i = tetrisArrLength - 1; i >= 0; i--) {
             for (let j = 0; j < tetrisArrLineLength; j++) {
                 if (arr[i][j] === 1) {
-                    arr[i + 1][j] = 1;
                     arr[i][j] = 0;
+                    arr[i + 1][j] = 1;
                 }
             }
         }
@@ -226,43 +301,7 @@ function pieceMove(target) {
     }
 }
 
-document.addEventListener("keydown", pieceMove);
-
-
-const iBlock = [[1, 1, 1, 1]];
-
-const jBlock = [
-    [1, 0, 0],
-    [1, 1, 1]
-];
-
-const lBlock = [
-    [0, 0, 1],
-    [1, 1, 1]
-];
-
-const oBlock = [
-    [1, 1],
-    [1, 1]
-]
-
-const sBlock = [
-    [0, 1, 1],
-    [1, 1, 0]
-];
-
-const tBlock = [
-    [0, 1, 0],
-    [1, 1, 1],
-];
-
-const zBlock = [
-    [1, 1, 0],
-    [0, 1, 1]
-];
-
 const allFirstBlocks = [iBlock, jBlock, lBlock, oBlock, sBlock, tBlock, zBlock];
-const randomIndex = Math.floor(Math.random() * allFirstBlocks.length);
 
 let randomBlockArrs = [];
 let randomBlockArraysField = [];
@@ -291,7 +330,6 @@ function chooseRandomBlock() {
     randomBlockArrs.push(allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
     inputRandomBlocks();
     renderFutureItems(randomBlockArraysField);
-
 }
 
 function inputRandomBlocks() {
@@ -324,25 +362,6 @@ function renderFutureItems(arr) {
             div.classList.add("red");
             document.querySelector(".future-blocks-field").append(div);
         }
-    }
-}
-
-
-function rotateCurrentBlock() {
-    currentBlock.reverse();
-    let resultArr = [];
-    for (let i = 0; i < currentBlock[0].length; i++) {
-        resultArr.push([]);
-        for (let j = 0; j < currentBlock.length; j++) {
-            resultArr[i][j] = currentBlock[j][i];
-        }
-    }
-    previousBlock = currentBlock;
-    currentBlock = resultArr;
-    if (blockIndexJTopRight > 6) {
-        blockIndexJTopLeft = blockIndexJTopRight - (currentBlock[0].length - 1);
-    } else {
-        blockIndexJTopRight = blockIndexJTopLeft + currentBlock[0].length - 1;
     }
 }
 
@@ -399,6 +418,24 @@ function imputNewCurrentBlock() {
     }
 }
 
+function rotateCurrentBlock() {
+    currentBlock.reverse();
+    let resultArr = [];
+    for (let i = 0; i < currentBlock[0].length; i++) {
+        resultArr.push([]);
+        for (let j = 0; j < currentBlock.length; j++) {
+            resultArr[i][j] = currentBlock[j][i];
+        }
+    }
+    previousBlock = currentBlock;
+    currentBlock = resultArr;
+    if (blockIndexJTopRight > 6) {
+        blockIndexJTopLeft = blockIndexJTopRight - (currentBlock[0].length - 1);
+    } else {
+        blockIndexJTopRight = blockIndexJTopLeft + currentBlock[0].length - 1;
+    }
+}
+
 function pieceRotate(target) {
     if (target.code === "ArrowUp") {
         rotateCurrentBlock();
@@ -408,8 +445,6 @@ function pieceRotate(target) {
         renderItems(tetrisArr);
     }
 }
-
-document.addEventListener("keydown", pieceRotate);
 
 function isChoosenRancomBlockImported() {
     for (let i = 0; i < tetrisArrLength; i++) {
@@ -421,7 +456,6 @@ function isChoosenRancomBlockImported() {
     }
     return true;
 }
-
 
 function importBlock() {
     if (isChoosenRancomBlockImported()) {
@@ -449,35 +483,33 @@ function removeLineFromArr() {
     return tetrisArr;
 }
 
-let pauseClickCounter = 2;
-
-document.querySelector(".pause-button").addEventListener("click", gamePauseResume);
-
-function gamePauseResume() {
-    if (pauseClickCounter % 2 === 0) {
-        clearInterval(fistLevel);
-        document.removeEventListener("keydown", pieceMove);
-        document.removeEventListener("keydown", pieceRotate);
-        document.querySelector(".game-paused").classList.add("unhide");
-        document.querySelector(".game-paused").classList.remove("hide");
-        document.querySelector(".pause-button").value = "RESUME";
-        pauseClickCounter += 1;
-    } else {
-        fistLevel = setInterval(down, 1000);
-        document.addEventListener("keydown", pieceMove);
-        document.addEventListener("keydown", pieceRotate);
-        document.querySelector(".game-paused").classList.remove("unhide");
-        document.querySelector(".game-paused").classList.add("hide");
-        document.querySelector(".pause-button").value = "PAUSE";
-        pauseClickCounter += 1;
-    }
-}
-
 function down() {
     pieceGoesDown(tetrisArr);
     renderItems(tetrisArr);
     blockIndexI += 1;
+    // debbugerFunc();
 };
 
+function debbugerFunc() {
+    let innerBlockCount = 0;
+    let currentBlockCount = 0;
+    for (let i = 0; i < tetrisArrLength; i++) {
+        for (let j = 0; j < tetrisArrLineLength; j++) {
+            if (tetrisArr[i][j] === 1) {
+                innerBlockCount++;
+            }
+        }
+    }
+    for (let i = 0; i < currentBlock.length; i++) {
+        for (let j = 0; j < currentBlock[i].length; j++) {
+            if (tetrisArr[i][j] === 1) {
+                currentBlockCount++;
+            }
+        }
+    }
+    if (innerBlockCount !== currentBlockCount) {
+        debugger;
+    }
+}
 
-
+render();
