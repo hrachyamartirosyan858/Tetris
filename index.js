@@ -346,7 +346,7 @@ function isRotateOk() {
         for (let i = 0; i < currentBlock.length; i++) {
             for (let j = 0; j < currentBlock[0].length; j++) {
                 if (tetrisArr[i + blockIndexI][j + blockIndexJTopLeft] === 2) {
-                    currentBlock = previousBlock.reverse();
+                    currentBlock = previousBlock.reverse();//chpiti global popoxakan poxi, dzi
                     return false;
                 }
             }
@@ -355,7 +355,7 @@ function isRotateOk() {
         for (let i = 0; i < currentBlock.length; i++) {
             for (let j = currentBlock[0].length - 1; j >= 0; j--) {
                 if (tetrisArr[i + blockIndexI][blockIndexJTopRight - j] === 2) {
-                    currentBlock = previousBlock.reverse();
+                    currentBlock = previousBlock.reverse();//chpiti global popoxakan poxi, dzi
                     return false;
                 }
             }
@@ -414,8 +414,8 @@ function rotateCurrentBlock() {
     }
 }
 
-function pieceRotate(target) {
-    if (target.code === "ArrowUp") {
+function pieceRotate(event) {
+    if (event.code === "ArrowUp") {
         rotateCurrentBlock();
         isRotateOk();
         clearTetrisArr();
@@ -448,6 +448,7 @@ function chooseRandomBlock() {
                 gameOver();
             } else {
                 tetrisArr[i][j + blockImportIndex] = currentBlock[i][j];
+                blockIndexI = 0;
             }
         }
     }
@@ -465,10 +466,11 @@ function importBlock() {
 }
 
 function removeLineFromArr() {
-    const emptyTopLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     const jLineMaxSum = 20;
     let jLineSum = 0;
     for (let i = 0; i < tetrisArrLength; i++) {
+        const emptyTopLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         for (let j = 0; j < tetrisArrLineLength; j++) {
             jLineSum += tetrisArr[i][j];
         }
