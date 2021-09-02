@@ -187,10 +187,11 @@ function pieceGoesDown(arr) {
                 }
             }
         }
-        removeLineFromArr();
-        importBlock();
+
+        // addEmptyRow();
+
     }
-    return arr;
+    // importBlock();
 }
 
 function isPieceGoingRightOk(arr) {
@@ -305,27 +306,6 @@ randomBlockArrs[0] = (allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.l
 randomBlockArrs[1] = (allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
 randomBlockArrs[2] = (allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
 
-function chooseRandomBlock() {
-    const randomBlock = randomBlockArrs[0];
-    randomBlockArrs.shift();
-    currentBlock = randomBlock;
-    const blockImportIndex = Math.floor((tetrisArrLineLength - currentBlock[0].length) / 2);
-    for (let i = 0; i < currentBlock.length; i++) {
-        for (let j = 0; j < currentBlock[0].length; j++) {
-            blockIndexJTopLeft = blockImportIndex;
-            blockIndexJTopRight = blockImportIndex + currentBlock[0].length - 1;
-            if (tetrisArr[i][j + blockImportIndex] === 2) {
-                gameOver();
-            } else {
-                tetrisArr[i][j + blockImportIndex] = currentBlock[i][j];
-            }
-        }
-    }
-    randomBlockArrs.push(allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
-    inputRandomBlocks();
-    renderNextItems(randomBlockArraysField);
-}
-
 function inputRandomBlocks() {
     randomBlockArraysField = [];
     const anyStartBlockMaxLength = 3;
@@ -434,8 +414,6 @@ function rotateCurrentBlock() {
     }
 }
 
-
-
 function pieceRotate(target) {
     if (target.code === "ArrowUp") {
         rotateCurrentBlock();
@@ -449,7 +427,7 @@ function pieceRotate(target) {
 function isImportChoosenRandomBlock() {
     for (let i = 0; i < tetrisArrLength; i++) {
         for (let j = 0; j < tetrisArrLineLength; j++) {
-            if (tetrisArr[i][j] === 1) {
+            if (tetrisArr[i][j] === 1 || tetrisArr.length !== tetrisArrLength) {
                 return false;
             }
         }
@@ -457,37 +435,64 @@ function isImportChoosenRandomBlock() {
     return true;
 }
 
+function chooseRandomBlock() {
+    const randomBlock = randomBlockArrs[0];
+    randomBlockArrs.shift();
+    currentBlock = randomBlock;
+    const blockImportIndex = Math.floor((tetrisArrLineLength - currentBlock[0].length) / 2);
+    for (let i = 0; i < currentBlock.length; i++) {
+        for (let j = 0; j < currentBlock[0].length; j++) {
+            blockIndexJTopLeft = blockImportIndex;
+            blockIndexJTopRight = blockImportIndex + currentBlock[0].length - 1;
+            if (tetrisArr[i][j + blockImportIndex] === 2) {
+                gameOver();
+            } else {
+                tetrisArr[i][j + blockImportIndex] = currentBlock[i][j];
+            }
+        }
+    }
+    randomBlockArrs.push(allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
+    inputRandomBlocks();
+    renderNextItems(randomBlockArraysField);
+}
+
 function importBlock() {
     if (isImportChoosenRandomBlock()) {
         chooseRandomBlock();
         renderTetrisArr(tetrisArr);
     }
+
 }
 
 function removeLineFromArr() {
     const emptyTopLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     const jLineMaxSum = 20;
     let jLineSum = 0;
-    for (let i = tetrisArrLength - 1; i >= 0; i--) {
+    for (let i = 0; i < tetrisArrLength; i++) {
         for (let j = 0; j < tetrisArrLineLength; j++) {
             jLineSum += tetrisArr[i][j];
         }
         if (jLineSum === jLineMaxSum) {
             tetrisArr.splice(i, 1);
+            console.log(tetrisArr);
+
+            tetrisArr.unshift(emptyTopLine);
+            console.log(tetrisArr);
+
             playerScore += 100;
             renderScoring();
+            // console.log(jLineSum);
+            // console.log(tetrisArr);
+            jLineSum = 0;
         }
         jLineSum = 0;
     }
-    while (tetrisArr.length < tetrisArrLength) {
-        tetrisArr.unshift(emptyTopLine);
-    }
-    // renderTetrsisArr(tetrisArr);
-    // return tetrisArr;
 }
 
 function down() {
     pieceGoesDown(tetrisArr);
+    removeLineFromArr();
+    importBlock();
     renderTetrisArr(tetrisArr);
     blockIndexI += 1;
     // debbugerFunc();
