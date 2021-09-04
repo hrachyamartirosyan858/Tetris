@@ -53,9 +53,14 @@ const zBlock = [
     [0, 1, 1]
 ];
 
+const allFirstBlocks = [iBlock, jBlock, lBlock, oBlock, sBlock, tBlock, zBlock];
 const tetrisArrLength = 20;
 const tetrisArrLineLength = 10;
 const tetrisArrRightPartIndex = 7;
+const rotateButton = document.querySelector(".rotate-button");
+const leftButton = document.querySelector(".left-button");
+const rightButton = document.querySelector(".right-button");
+const downButton = document.querySelector(".down-button");
 let playerScore = 0;
 let currentBlock;
 let previousBlock;
@@ -63,7 +68,9 @@ let fistLevel;
 let blockIndexI = 0;
 let blockIndexJTopLeft = 0;
 let blockIndexJTopRight = 0;
-let isPlaying = true;
+let isPlaying = false;
+let randomBlockArrs = [];
+let randomBlockArraysField = [];
 
 function startNewGame() {
     tetrisArr = [
@@ -98,35 +105,7 @@ function startNewGame() {
     clearInterval(fistLevel);
     fistLevel = setInterval(down, 1000);
     renderGameStart();
-}
-
-function renderGameStart() {
-    document.querySelector(".game-over").classList.remove("unhide");
-    document.querySelector(".game-over").classList.add("hide");
-    document.querySelector(".pause-button").classList.remove("hidden");
-    document.querySelector(".pause-button").addEventListener("click", gamePauseResume);
-    document.addEventListener("keydown", pieceMove);
-    document.addEventListener("keydown", pieceRotate);
-    document.querySelector(".start-button").addEventListener("click", startNewGame);
-    if (!isPlaying) {
-        renderGameUnpaused();
-    }
-}
-
-function renderGamePaused() {
-    document.removeEventListener("keydown", pieceMove);
-    document.removeEventListener("keydown", pieceRotate);
-    document.querySelector(".game-paused").classList.add("unhide");
-    document.querySelector(".game-paused").classList.remove("hide");
-    document.querySelector(".pause-button").value = "RESUME";
-}
-
-function renderGameUnpaused() {
-    document.addEventListener("keydown", pieceMove);
-    document.addEventListener("keydown", pieceRotate);
-    document.querySelector(".game-paused").classList.remove("unhide");
-    document.querySelector(".game-paused").classList.add("hide");
-    document.querySelector(".pause-button").value = "PAUSE";
+    renderPauseButton();
 }
 
 function gamePauseResume() {
@@ -139,14 +118,6 @@ function gamePauseResume() {
         renderGameUnpaused();
         isPlaying = true;
     }
-}
-
-function renderGameOver() {
-    document.querySelector(".game-over").classList.add("unhide");
-    document.querySelector(".game-over").classList.remove("hide");
-    document.querySelector(".pause-button").classList.add("hidden");
-    document.removeEventListener("keydown", pieceMove);
-    document.removeEventListener("keydown", pieceRotate);
 }
 
 function gameOver() {
@@ -187,11 +158,7 @@ function pieceGoesDown(arr) {
                 }
             }
         }
-
-        // addEmptyRow();
-
     }
-    // importBlock();
 }
 
 function isPieceGoingRightOk(arr) {
@@ -248,59 +215,57 @@ function pieceGoesLeft(arr) {
     return arr;
 }
 
-function renderTetrisArr(arr) {
-    document.querySelector(".tetris-field").innerHTML = "";
-    for (let i = 0; i < tetrisArrLength; i++) {
-        for (let j = 0; j < tetrisArrLineLength; j++) {
-            if (arr[i][j] === 0) {
-                const div = document.createElement("div");
-                div.classList.add("white");
-                document.querySelector(".tetris-field").append(div);
-            } else if (arr[i][j] === 1) {
-                const div = document.createElement("div");
-                div.classList.add("red");
-                document.querySelector(".tetris-field").append(div);
-            } else if (arr[i][j] === 2) {
-                const div = document.createElement("div");
-                div.classList.add("black");
-                document.querySelector(".tetris-field").append(div);
-            }
-        }
+function moveLeft() {
+    pieceGoesLeft(tetrisArr);
+    renderTetrisArr(tetrisArr);
+    if (blockIndexJTopLeft > 0) {
+        blockIndexJTopLeft -= 1;
+        blockIndexJTopRight -= 1;
     }
 }
 
-function pieceMove(target) {
-    if (target.code === "ArrowRight") {
-        pieceGoesRight(tetrisArr);
-        renderTetrisArr(tetrisArr);
-        if (blockIndexJTopLeft + currentBlock[0].length < 10) {
-            blockIndexJTopLeft += 1;
-            blockIndexJTopRight += 1;
-        }
-    } else if (target.code === "ArrowLeft") {
-        pieceGoesLeft(tetrisArr);
-        renderTetrisArr(tetrisArr);
-        if (blockIndexJTopLeft > 0) {
-            blockIndexJTopLeft -= 1;
-            blockIndexJTopRight -= 1;
-        }
-    } else if (target.code === "ArrowDown") {
-        pieceGoesDown(tetrisArr);
+function moveRight() {
+    pieceGoesRight(tetrisArr);
+    renderTetrisArr(tetrisArr);
+    if (blockIndexJTopLeft + currentBlock[0].length < 10) {
+        blockIndexJTopLeft += 1;
+        blockIndexJTopRight += 1;
+    }
+}
+
+function moveDown() {
+    pieceGoesDown(tetrisArr);
+    if (!isImportChoosenRandomBlock()) {
         playerScore += 10;
-        renderScoring();
-        renderTetrisArr(tetrisArr);
-        blockIndexI += 1;
+    }
+    renderScoring();
+    renderTetrisArr(tetrisArr);
+    blockIndexI += 1;
+}
+
+function pieceMove(event) {
+    if (event.code === "ArrowRight") {
+        moveRight();
+    } else if (event.code === "ArrowLeft") {
+        moveLeft();
+    } else if (event.code === "ArrowDown") {
+        moveDown();
     }
 }
 
-function renderScoring() {
-    document.querySelector(".score").innerText = `score: ${playerScore} pts`;
+function rotate() {
+    rotateCurrentBlock();
+    isRotateOk();
+    clearTetrisArr();
+    imputNewCurrentBlock();
+    renderTetrisArr(tetrisArr);
 }
 
-const allFirstBlocks = [iBlock, jBlock, lBlock, oBlock, sBlock, tBlock, zBlock];
-
-let randomBlockArrs = [];
-let randomBlockArraysField = [];
+function pieceRotate(event) {
+    if (event.code === "ArrowUp") {
+        rotate();
+    }
+}
 
 randomBlockArrs[0] = (allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
 randomBlockArrs[1] = (allFirstBlocks[Math.floor(Math.random() * allFirstBlocks.length)]);
@@ -326,27 +291,11 @@ function inputRandomBlocks() {
     randomBlockArraysField.push(0, 0, 0, 0, 0);
 }
 
-function renderNextItems(arr) {
-    document.querySelector(".future-blocks-field").innerHTML = "";
-    for (let i = 0; i < randomBlockArraysField.length; i++) {
-        if (arr[i] === 0) {
-            const div = document.createElement("div");
-            div.classList.add("white");
-            document.querySelector(".future-blocks-field").append(div);
-        } else if (arr[i] === 1) {
-            const div = document.createElement("div");
-            div.classList.add("red");
-            document.querySelector(".future-blocks-field").append(div);
-        }
-    }
-}
-
 function isRotateOk() {
     if (blockIndexJTopLeft < tetrisArrRightPartIndex) {
         for (let i = 0; i < currentBlock.length; i++) {
             for (let j = 0; j < currentBlock[0].length; j++) {
                 if (tetrisArr[i + blockIndexI][j + blockIndexJTopLeft] === 2) {
-                    currentBlock = previousBlock.reverse();//chpiti global popoxakan poxi, dzi
                     return false;
                 }
             }
@@ -355,7 +304,6 @@ function isRotateOk() {
         for (let i = 0; i < currentBlock.length; i++) {
             for (let j = currentBlock[0].length - 1; j >= 0; j--) {
                 if (tetrisArr[i + blockIndexI][blockIndexJTopRight - j] === 2) {
-                    currentBlock = previousBlock.reverse();//chpiti global popoxakan poxi, dzi
                     return false;
                 }
             }
@@ -391,7 +339,10 @@ function imputNewCurrentBlock() {
                 }
             }
         }
+    } else {
+        currentBlock = previousBlock.reverse();
     }
+
 }
 
 function rotateCurrentBlock() {
@@ -411,16 +362,6 @@ function rotateCurrentBlock() {
         blockIndexJTopLeft = blockIndexJTopRight - currentBlockWidth;
     } else {
         blockIndexJTopRight = blockIndexJTopLeft + currentBlockWidth;
-    }
-}
-
-function pieceRotate(event) {
-    if (event.code === "ArrowUp") {
-        rotateCurrentBlock();
-        isRotateOk();
-        clearTetrisArr();
-        imputNewCurrentBlock();
-        renderTetrisArr(tetrisArr);
     }
 }
 
@@ -462,11 +403,9 @@ function importBlock() {
         chooseRandomBlock();
         renderTetrisArr(tetrisArr);
     }
-
 }
 
 function removeLineFromArr() {
-
     const jLineMaxSum = 20;
     let jLineSum = 0;
     for (let i = 0; i < tetrisArrLength; i++) {
@@ -476,15 +415,9 @@ function removeLineFromArr() {
         }
         if (jLineSum === jLineMaxSum) {
             tetrisArr.splice(i, 1);
-            console.log(tetrisArr);
-
             tetrisArr.unshift(emptyTopLine);
-            console.log(tetrisArr);
-
             playerScore += 100;
             renderScoring();
-            // console.log(jLineSum);
-            // console.log(tetrisArr);
             jLineSum = 0;
         }
         jLineSum = 0;
@@ -497,33 +430,101 @@ function down() {
     importBlock();
     renderTetrisArr(tetrisArr);
     blockIndexI += 1;
-    // debbugerFunc();
+
 };
 
-function debbugerFunc() {
-    let innerBlockCount = 0;
-    let currentBlockCount = 0;
+function renderPauseButton() {
+    document.querySelector(".pause-button").classList.remove("hidden");
+}
+
+function renderScoring() {
+    document.querySelector(".score").innerText = `score: ${playerScore} pts`;
+}
+
+function renderGameStart() {
+    document.querySelector(".start-button").addEventListener("click", startNewGame);
+    document.querySelector(".game-over").classList.remove("unhide");
+    document.querySelector(".game-over").classList.add("hide");
+    rotateButton.addEventListener("click", rotate);
+    leftButton.addEventListener("click", moveLeft);
+    rightButton.addEventListener("click", moveRight);
+    downButton.addEventListener("click", moveDown);
+    document.querySelector(".pause-button").addEventListener("click", gamePauseResume);
+    document.addEventListener("keydown", pieceMove);
+    document.addEventListener("keydown", pieceRotate);
+}
+
+function renderGamePaused() {
+    document.removeEventListener("keydown", pieceMove);
+    document.removeEventListener("keydown", pieceRotate);
+    rotateButton.removeEventListener("click", rotate);
+    leftButton.removeEventListener("click", moveLeft);
+    rightButton.removeEventListener("click", moveRight);
+    downButton.removeEventListener("click", moveDown);
+    document.querySelector(".game-paused").classList.add("unhide");
+    document.querySelector(".game-paused").classList.remove("hide");
+    document.querySelector(".pause-button").value = "RESUME";
+}
+
+function renderGameUnpaused() {
+    document.addEventListener("keydown", pieceMove);
+    document.addEventListener("keydown", pieceRotate);
+    rotateButton.addEventListener("click", rotate);
+    leftButton.addEventListener("click", moveLeft);
+    rightButton.addEventListener("click", moveRight);
+    downButton.addEventListener("click", moveDown);
+    document.querySelector(".game-paused").classList.remove("unhide");
+    document.querySelector(".game-paused").classList.add("hide");
+    document.querySelector(".pause-button").value = "PAUSE";
+}
+
+function renderGameOver() {
+    document.querySelector(".game-over").classList.add("unhide");
+    document.querySelector(".game-over").classList.remove("hide");
+    document.querySelector(".pause-button").classList.add("hidden");
+    rotateButton.removeEventListener("click", rotate);
+    leftButton.removeEventListener("click", moveLeft);
+    rightButton.removeEventListener("click", moveRight);
+    downButton.removeEventListener("click", moveDown);
+    document.removeEventListener("keydown", pieceMove);
+    document.removeEventListener("keydown", pieceRotate);
+}
+
+function renderTetrisArr(arr) {
+    document.querySelector(".tetris-field").innerHTML = "";
     for (let i = 0; i < tetrisArrLength; i++) {
         for (let j = 0; j < tetrisArrLineLength; j++) {
-            if (tetrisArr[i][j] === 1) {
-                innerBlockCount++;
+            if (arr[i][j] === 0) {
+                const div = document.createElement("div");
+                div.classList.add("white");
+                document.querySelector(".tetris-field").append(div);
+            } else if (arr[i][j] === 1) {
+                const div = document.createElement("div");
+                div.classList.add("red");
+                document.querySelector(".tetris-field").append(div);
+            } else if (arr[i][j] === 2) {
+                const div = document.createElement("div");
+                div.classList.add("black");
+                document.querySelector(".tetris-field").append(div);
             }
         }
     }
-    for (let i = 0; i < currentBlock.length; i++) {
-        for (let j = 0; j < currentBlock[i].length; j++) {
-            if (tetrisArr[i][j] === 1) {
-                currentBlockCount++;
-            }
+}
+
+function renderNextItems(arr) {
+    document.querySelector(".future-blocks-field").innerHTML = "";
+    for (let i = 0; i < randomBlockArraysField.length; i++) {
+        if (arr[i] === 0) {
+            const div = document.createElement("div");
+            div.classList.add("white");
+            document.querySelector(".future-blocks-field").append(div);
+        } else if (arr[i] === 1) {
+            const div = document.createElement("div");
+            div.classList.add("red");
+            document.querySelector(".future-blocks-field").append(div);
         }
-    }
-    if (innerBlockCount !== currentBlockCount) {
-        debugger;
     }
 }
 
 
 renderGameStart();
-
-
-

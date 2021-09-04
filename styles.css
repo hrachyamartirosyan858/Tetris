@@ -1,9 +1,136 @@
 body{
     display: flex;
-    align-items: center;  
+    align-items: center; 
+    flex-direction: row; 
 }
 
 .score{
+    width: 15vw;
+    height: 7vw;
+    font-size: 25px;
+    border: solid black;
+    text-align: center;
+    border-radius: 18px;
+    margin-right: 2vw;
+}
+
+.next{
+    font-size: xxx-large;
+    text-align: center;
+}
+
+.buttons{
+    width: 20vw;
+}
+
+.future-blocks-field{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 1fr;
+    width: 17vw;
+    height: 34vw;
+    grid-gap: 0px;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-bottom: 50px;
+}
+
+.future-blocks-field div{
+    border: solid green 1.2px;
+    /* width: 23px;
+    height: 22px;
+    margin: 0; */
+ }
+.start-button{
+    height: 10vw;
+    width: 15vw;
+    margin: 2vw;
+    font-size: xx-large;
+}
+
+.pause-button{
+    height: 10vw;
+    width: 15vw;
+    margin: 2vw;
+    font-size: xx-large;
+}
+
+
+.tetris-field{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+    border: solid green 1px;
+    width: 80%;
+    height: 120vw;
+    grid-gap: 0px;
+    margin-top: 20px;    
+}
+
+.main-keyboard{
+    position: absolute;
+    left: 19vw;
+    top: 134vw;
+    width: 63vw;
+    height: 57vw;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.main-keyboard div{
+    margin: 15px;
+}
+
+.rotate-button {
+    grid-column: 2 / 3;
+    grid-row: 1;
+    margin-bottom: 15px;
+    font-size: xx-large;
+}
+
+.left-button {
+    grid-column: 1 / 2;
+    grid-row: 2;
+    margin-right: 30px;
+    margin-top: 15px;
+    font-size: xx-large;
+}
+
+.down-button {
+    grid-column: 2 / 3;
+    grid-row: 2;
+    margin-top: 15px;
+    font-size: xx-large;
+}
+
+.right-button {
+    grid-column: 3 / 4;
+    grid-row: 2;
+    margin-left: 30px;
+    margin-top: 15px;
+    font-size: xx-large;
+}
+
+.tetris-field div{
+    border: solid green 1.2px;
+}
+
+@media screen and (min-width: 468px) {
+    /* .tetris-field{
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(20, 1fr);
+        border: solid green 2px;
+        width: 225px;
+        height: 447px;
+        grid-gap: 0px;
+        margin-top: 20px;
+    }   */
+}
+/* .score{
     text-align: center;
     width: 150px;
     height: 20px;
@@ -12,18 +139,6 @@ body{
     border-radius: 10px;
     margin-right: 20px;
     margin-left: 20px;
-}
-
-.tetris-field{
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(20, 1fr);
-    border: solid green 2px;
-    width: 225px;
-    height: 447px;
-    grid-gap: 0px;
-    margin-top: 20px;
 }
 
 .main-keyboard{
@@ -106,12 +221,12 @@ body{
 
 @media screen and (min-width: 468px) {
     .main-keyboard {
-        display: none;
+        visibility: hidden;
         width: 400px;
     }
 
 
-    /* .score{
+    .score{
         text-align: center;
         width: 150px;
         height: 30px;
@@ -182,5 +297,5 @@ body{
         width: 135px;
         margin-top: 25px;
 
-    } */
-}
+    }
+} */
