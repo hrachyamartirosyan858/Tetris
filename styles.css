@@ -118,6 +118,11 @@ body{
 }
 
 @media screen and (min-width: 468px) {
+
+    /* .main-keyboard{
+        display: none;
+    } */
+
     /* .tetris-field{
         position: relative;
         display: grid;
