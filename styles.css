@@ -87,11 +87,11 @@ body{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
+    touch-action: manipulation;
 }
 
 .main-keyboard div{
     margin: 15px;
-    touch-action: manipulation;
 }
 
 .rotate-button {
