@@ -91,6 +91,7 @@ body{
 
 .main-keyboard div{
     margin: 15px;
+    touch-action: manipulation;
 }
 
 .rotate-button {
